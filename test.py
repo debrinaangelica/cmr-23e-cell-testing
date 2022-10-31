@@ -3,11 +3,12 @@
 # TODO: TEST IF CURRENT LIMIT ACTUALLY LIMITS THE CURRENT
 # TODO: FIND A WAY TO STORE DATA IN CSV FILE AND MARK TIMESTAMPS IN PARALLEL
 
-# List of currents in hex
-# 3A = 0x7530
-# 0.5A = 0x1388
-# 10A = 0x186A0
-# 15A = 0x249F0
+# REFERENCE: List of currents in hex
+# 3A    = 0x7530
+# 0.5A  = 0x1388
+# 1A    = 0x2710
+# 10A   = 0x186A0
+# 15A   = 0x249F0
 
 import signal
 import serial
@@ -18,24 +19,35 @@ import bk8500functions
 import testfunctions
 import resetload
 
-# GLOBAL VARIABLES
+### GLOBAL VARIABLES ###
 length_packet = 26
 num_test_cycles = 10
 sp = serial.Serial()
 sp.setBaudrate = 9600
 sp.port = 'COM6'
 cmd=[0]*26
-# END OF GLOBAL VARIABLES
+### END OF GLOBAL VARIABLES ###
 
+# INITIALIZE CSV FILE
+# open the file in the write mode
+f = open('testdata.csv', 'w')
+# create the csv writer
+writer = csv.writer(f)
+# write the header for the data
+fieldnames = ['timestamp', 'voltage', 'current']
+writer.writerow(fieldnames)
 
-with open('testdata.csv', 'w', newline='') as csvfile:   # unsure what this newline does
-    fieldnames = ['timestamp', 'voltage', 'current']
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames) # .writer or .DictWriter ?
-    writer.writeheader()
-
+# ctrl-C to abort if something goes wrong
 def abort(signum, frame):
     resetload.resetLoad(cmd, sp)
     sys.terminate()
+
+def get_load_data():
+    load_data = []
+    load_data.append(time.time())
+    # load_data.append(voltage)
+    # load_data.append(current)
+    return
 
 def main():
     sp.open()
@@ -150,6 +162,9 @@ def main():
 
     resetload.resetLoad(cmd, sp)
     sp.close()
+    
+    # close the CSV file
+    f.close()
 
     
 main()
