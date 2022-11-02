@@ -1,4 +1,6 @@
 
+
+# prints out the command and load output associated to it
 def cmd8500(cmd , ser):
     print("Command: ", hex(cmd[2]))
     printbuff(cmd)
@@ -7,24 +9,22 @@ def cmd8500(cmd , ser):
     print("Resp: ")
     printbuff(resp)
     
+
+# ORIGINAL PRINTBUFF: prints the serial output into a readable little-endian hex format
+#   hex(x) converts integer x to hex form
+#   r+=" " puts a space in between each hex 
 # def printbuff(b):
 #     r=""
 #     for s in range(len(b)):
 #         r+=" "
-#         r+=str(s)
-#         r+="-"
 #         r+=hex(b[s]).replace('0x','')
 #     print(r)
 
-# print voltage / current value 
-# (data is at byte 3-6 -- little endian)
+# printbuff, but what if we don't convert the string into a hex?
 def printbuff(b):
-    r=""
-    for s in range(len(b)):
-        r+=" "
-        r+=hex(b[s]).replace('0x','')
-    print(r)
+    print(b)
 
+# calculates the checksum
 def csum(thing):
     sum = 0
     for i in range(len(thing)):
