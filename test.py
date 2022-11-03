@@ -122,43 +122,9 @@ def main():
         bk8500functions.cmd8500(cmd,sp)
 
     # Continuously collect votlage and current data for 0.5 seconds
-        t_readdata = time.time() + 10
+        t_readdata = time.time() + 0.5
         while time.time() < t_readdata:
             testfunctions.readVC(cmd, sp)
-
-    # # Set constant current of 10A = 0x186A0 for 0.5 seconds
-    #     cmd=[0]*26
-    #     cmd[0]=0xAA
-    #     cmd[2]=0x2A 
-    #     cmd[3]=0xA0 # LSB of current value 10A = 100000*0.1mA = 0x186A0
-    #     cmd[4]=0x86
-    #     cmd[5]=0x01
-    #     cmd[6]=0x00 # MSB
-    #     cmd[25]=bk8500functions.csum(cmd)
-    #     bk8500functions.cmd8500(cmd,sp)
-
-        
-
-
-# # Set constant current of 0A = 0x0
-#     cmd=[0]*26
-#     cmd[0]=0xAA
-#     cmd[2]=0x2A 
-#     cmd[3]=0x00 # LSB of current 
-#     cmd[4]=0x00
-#     cmd[5]=0x00
-#     cmd[6]=0x00 # MSB
-#     cmd[25]=bk8500functions.csum(cmd)
-#     bk8500functions.cmd8500(cmd,sp)
-
-
-# ### Turn OFF the load
-#     cmd=[0]*26
-#     cmd[0]=0xAA
-#     cmd[2]=0x21
-#     cmd[3]=0x00
-#     cmd[25]=bk8500functions.csum(cmd)
-#     bk8500functions.cmd8500(cmd, sp)
 
     resetload.resetLoad(cmd, sp)
     sp.close()
