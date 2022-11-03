@@ -3,7 +3,7 @@ import bk8500functions
 
 # Convert little endian hex of voltage to decimal
 def readVoltage(resp):
-    voltage = ""
+    voltage = 0
     # 01 23 45 [67 89 1011 1213]
     # gets the hex representation of the output in big endian form
     for x in range (12, 4, -2):
