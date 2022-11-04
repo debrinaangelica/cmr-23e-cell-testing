@@ -8,7 +8,7 @@ def readVoltage(resp):
     for x in range (6, 2, -1):
         voltage = voltage + hex(resp[x]).replace('0x','')
     voltage = int(voltage, 16)
-    print("voltage = ", voltage)
+    # print("voltage = ", voltage)
     return voltage
 
 # returns the current read as an int (in units of mA)
@@ -18,7 +18,7 @@ def readCurrent(resp):
     for x in range (10, 6, -1):
         current = current + hex(resp[x]).replace('0x','')
     current = int(current, 16)
-    print("current = ", current)
+    # print("current = ", current)
     return current    
 
 # Read terminal voltage and current 

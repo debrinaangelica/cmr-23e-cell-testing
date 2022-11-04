@@ -5,6 +5,7 @@
 
 # REFERENCE: List of currents in hex
 # 3A    = 0x7530
+# 2A    = 0x4E20
 # 0.5A  = 0x1388
 # 1A    = 0x2710
 # 10A   = 0x186A0
@@ -20,7 +21,7 @@ import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
-datafile = 'testdata/test_cell_0_15amp.csv'
+datafile = 'testdata/test_cell_0.csv'
 # WARNING! 'w' will overwrite existing data
 # use 'a' to add to existing data
 CSVmode = 'w'  
@@ -118,18 +119,18 @@ def main():
             testfunctions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))
             
-    # Set constant current of 15A = 0x249F0 for 0.5 seconds
+    # Set constant current of 2A = 0x4E20 for 0.5 seconds
         cmd=[0]*26
         cmd[0]=0xAA
         cmd[2]=0x2A
-        cmd[3]=0xF0 # LSB of current value 15A = 160000*0.1mA = 249F0
-        cmd[4]=0x49
-        cmd[5]=0x02
+        cmd[3]=0x20 # LSB of current value 15A = 160000*0.1mA = 249F0
+        cmd[4]=0x4E
+        cmd[5]=0x00
         cmd[6]=0x00 # MSB
         cmd[25]=bk8500functions.csum(cmd)
         bk8500functions.cmd8500(cmd,sp)
 
-        print("read data 15A:")
+        print("read data 2A:")
     # Continuously collect votlage and current data for 1 seconds
         t_readdata = time.time() + 1
         while time.time() < t_readdata:

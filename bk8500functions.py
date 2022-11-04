@@ -1,12 +1,12 @@
 
 # prints out the command and load output associated to it
 def cmd8500(cmd , ser):
-    print("Command: ", hex(cmd[2]))
-    printbuff(cmd)
+    # print("Command: ", hex(cmd[2]))
+    # printbuff(cmd)
     ser.write(cmd)
     resp = ser.readline(26)
-    print("Resp: ")
-    printbuff(resp)
+    # print("Resp: ")
+    # printbuff(resp)
     
 
 # ORIGINAL PRINTBUFF: prints the serial output into a readable little-endian hex format
