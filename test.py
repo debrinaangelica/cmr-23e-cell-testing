@@ -20,6 +20,11 @@ import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
+datafile = 'testdata/testdata.csv'
+# WARNING! 'w' will overwrite existing data
+# use 'a' to add to existing data
+CSVmode = 'a'  
+
 length_packet = 26
 num_test_cycles = 10
 sp = serial.Serial()
@@ -30,24 +35,26 @@ cmd=[0]*26
 
 # INITIALIZE CSV FILE
 # open the file in the write mode
-f = open('testdata/testdata.csv', 'w')
+f = open(datafile, CSVmode,  newline='')
 # create the csv writer
 writer = csv.writer(f)
 # write the header for the data
 fieldnames = ['timestamp', 'voltage', 'current']
-writer.writerow(fieldnames)
+if (CSVmode == 'w'):
+    writer.writerow(fieldnames)
 
 # ctrl-C to abort if something goes wrong
 def abort(signum, frame):
     resetload.resetLoad(cmd, sp)
     sys.terminate()
 
-def get_load_data():
+# returns the load data as an array to store in csv file
+# format [timestamp, voltage, current]
+def get_load_data(cmd, sp):
     load_data = []
     load_data.append(time.time())
-    # load_data.append(voltage)
-    # load_data.append(current)
-    return
+    load_data.extend(testfunctions.readVC(cmd, sp))
+    return load_data
 
 def main():
     sp.open()
@@ -106,9 +113,10 @@ def main():
 
         print("read data 0.5A:")
     # Continuously collect votlage and current data for 10 seconds
-        t_readdata = time.time() + 10
-        while time.time() < t_readdata:
-            testfunctions.readVC(cmd, sp)
+    t_readdata = time.time() + 10
+    while time.time() < t_readdata:
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
             
     # Set constant current of 15A = 0x249F0 for 0.5 seconds
         cmd=[0]*26
@@ -121,12 +129,18 @@ def main():
         cmd[25]=bk8500functions.csum(cmd)
         bk8500functions.cmd8500(cmd,sp)
 
-    # Continuously collect votlage and current data for 0.5 seconds
-        t_readdata = time.time() + 0.5
-        while time.time() < t_readdata:
-            testfunctions.readVC(cmd, sp)
+        print("read data 15A:")
+    # Continuously collect votlage and current data for 1 seconds
+    t_readdata = time.time() + 1
+    while time.time() < t_readdata:
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
 
+
+    # reset the load to 0A, 0V 
     resetload.resetLoad(cmd, sp)
+
+    # close the serial port
     sp.close()
     
     # close the CSV file
