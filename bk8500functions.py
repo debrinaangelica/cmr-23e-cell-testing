@@ -1,5 +1,4 @@
 
-
 # prints out the command and load output associated to it
 def cmd8500(cmd , ser):
     print("Command: ", hex(cmd[2]))
@@ -20,22 +19,6 @@ def printbuff(b):
         r+=hex(b[s]).replace('0x','')
     print(r)
 
-    # hexsum = 0
-    # for x in range (0, 10, 1):
-        
-    #     print(hex(b[x]))
-    #     hexsum = hexsum + int(hex(b[x]),0)
-    # print(hexsum)
-    
-# def getBigEndian(hexNum):
-    # assert there are
-
-
-# ?? what format is ser.readline() in?
-
-# printbuff, but what if we don't convert the string into a hex?
-# def printbuff(b):
-#     print(b)
 
 # calculates the checksum
 def csum(thing):
