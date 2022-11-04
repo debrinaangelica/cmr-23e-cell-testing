@@ -98,7 +98,7 @@ def main():
         cmd[0]=0xAA
         cmd[2]=0x2A
         cmd[3]=0x88 # LSB of current value 
-        cmd[4]=0x13
+        cmd[4]=0x13 # 88 13
         cmd[5]=0x00
         cmd[6]=0x00 # MSB
         cmd[25]=bk8500functions.csum(cmd)
