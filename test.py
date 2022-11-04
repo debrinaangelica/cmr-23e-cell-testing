@@ -113,10 +113,10 @@ def main():
 
         print("read data 0.5A:")
     # Continuously collect votlage and current data for 10 seconds
-    t_readdata = time.time() + 10
-    while time.time() < t_readdata:
-        testfunctions.readVC(cmd, sp)
-        writer.writerow(get_load_data(cmd, sp))
+        t_readdata = time.time() + 10
+        while time.time() < t_readdata:
+            testfunctions.readVC(cmd, sp)
+            writer.writerow(get_load_data(cmd, sp))
             
     # Set constant current of 15A = 0x249F0 for 0.5 seconds
         cmd=[0]*26
@@ -131,10 +131,10 @@ def main():
 
         print("read data 15A:")
     # Continuously collect votlage and current data for 1 seconds
-    t_readdata = time.time() + 1
-    while time.time() < t_readdata:
-        testfunctions.readVC(cmd, sp)
-        writer.writerow(get_load_data(cmd, sp))
+        t_readdata = time.time() + 1
+        while time.time() < t_readdata:
+            testfunctions.readVC(cmd, sp)
+            writer.writerow(get_load_data(cmd, sp))
 
 
     # reset the load to 0A, 0V 
