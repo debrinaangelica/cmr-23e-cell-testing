@@ -29,25 +29,26 @@ def readVC(cmd, ser):
     cmd[0]=0xAA
     cmd[2]=0x5f
     cmd[25]=bk8500functions.csum(cmd)
+    resp = bk8500functions.cmd8500(cmd, ser)
 
     # write our command to serial     
-    ser.write(cmd)
+    # ser.write(cmd)
 
-    # get serial response
-    resp = ser.readline(26)
+    # # get serial response
+    # resp = ser.readline(26)
 
-    # extract the current data from response
-    current = readCurrent(resp)
+    # extract the current data from response (units of A)
+    current = float(readCurrent(resp)) / 10000
 
-    # extract the voltage data from response
-    voltage = readVoltage(resp)
+    # extract the voltage data from response (units of V)
+    voltage = float(readVoltage(resp)) / 1000
 
     # print extracted data
-    # print("current: ", current, "  voltage: ", voltage)
+    print("current: ", current, "  voltage: ", voltage)
     
     # format the data into an array to return
-    vcData.append(current)
     vcData.append(voltage)
+    vcData.append(current)
     return vcData
 
  

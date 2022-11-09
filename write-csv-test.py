@@ -9,6 +9,7 @@
 # 1A    = 0x2710
 # 10A   = 0x186A0
 # 15A   = 0x249F0
+# 20A   = 
 
 import signal
 import serial
@@ -20,10 +21,10 @@ import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
-datafile = 'testdata/testdata.csv'
+datafile = 'testdata/testdata_1.csv'
 # WARNING! 'w' will overwrite existing data
 # use 'a' to add to existing data
-CSVmode = 'a'  
+CSVmode = 'w'  
 
 length_packet = 26
 num_test_cycles = 10
@@ -77,13 +78,13 @@ def main():
     cmd[25]=bk8500functions.csum(cmd)
     bk8500functions.cmd8500(cmd, sp)
 
-# Set current limit to 0.5A
+# Set current limit to !20A!
     cmd=[0]*26
     cmd[0]=0xAA
     cmd[2]=0x24
-    cmd[3]=0x88 # LSB of current value 0.5A = 0x1388
-    cmd[4]=0x13
-    cmd[5]=0x00
+    cmd[3]=0x40 # LSB of current value 20A = 0x30d40
+    cmd[4]=0x0d
+    cmd[5]=0x03
     cmd[6]=0x00 # MSB
     cmd[25]=bk8500functions.csum(cmd)
     bk8500functions.cmd8500(cmd,sp)
@@ -101,12 +102,127 @@ def main():
 
     print("read data 0.5A:")
 # Continuously collect votlage and current data for 10 seconds
-    t_readdata = time.time() + 10
-    while time.time() < t_readdata:
+    # t_readdata = time.time() + 10
+    # while time.time() < t_readdata:
+    testfunctions.readVC(cmd, sp)
+    writer.writerow(get_load_data(cmd, sp))
+
+# Set constant current of 1A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0x10 # LSB of current value 
+    cmd[4]=0x27 # note: cannot write a current higher 
+    cmd[5]=0x00       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+
+    print("read data 1A:")
+# Continuously collect votlage and current data for 10 seconds
+    # t_readdata = time.time() + 10
+    # while time.time() < t_readdata:
+    testfunctions.readVC(cmd, sp)
+    writer.writerow(get_load_data(cmd, sp))
+
+# Set constant current of 1.5A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0x98 # LSB of current value 
+    cmd[4]=0x3a # note: cannot write a current higher 
+    cmd[5]=0x00       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+
+    print("read data 1.5A:")
+# Continuously collect votlage and current data for 10 seconds
+    # t_readdata = time.time() + 10
+    # while time.time() < t_readdata:
+    testfunctions.readVC(cmd, sp)
+    writer.writerow(get_load_data(cmd, sp))
+
+# Set constant current of 10A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0xa0 # LSB of current value 
+    cmd[4]=0x68 # note: cannot write a current higher 
+    cmd[5]=0x01       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+
+    print("read data 10A:")
+# Continuously collect votlage and current data for 10 seconds
+    # t_readdata = time.time() + 10
+    # while time.time() < t_readdata:
+    testfunctions.readVC(cmd, sp)
+    writer.writerow(get_load_data(cmd, sp))
+
+# Set constant current of 8A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0x80 # LSB of current value 
+    cmd[4]=0x38 # note: cannot write a current higher 
+    cmd[5]=0x01       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+
+    print("read data 8A:")
+# Continuously collect votlage and current data for 10 seconds
+    # t_readdata = time.time() + 10
+    # while time.time() < t_readdata:
+    for x in range(0,5):
         testfunctions.readVC(cmd, sp)
         writer.writerow(get_load_data(cmd, sp))
 
-        
+# Set constant current of 5.5A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0xd8 # LSB of current value 
+    cmd[4]=0xd6 # note: cannot write a current higher 
+    cmd[5]=0x00       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+    
+    for x in range(0,5):
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
+
+    print("read data 5.5A:")
+# Continuously collect votlage and current data for 10 seconds
+    # t_readdata = time.time() + 10
+    # while time.time() < t_readdata:
+    for x in range(0,5):
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
+
+# Set constant current of 15A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0xf0 # LSB of current value 
+    cmd[4]=0x49 # note: cannot write a current higher 
+    cmd[5]=0x02       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+
+    print("read data 15A:")
+# Continuously collect votlage and current data for 10 seconds
+    # t_readdata = time.time() + 10
+    # while time.time() < t_readdata:
+    for x in range(0,5):
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
+
+
 
 
 

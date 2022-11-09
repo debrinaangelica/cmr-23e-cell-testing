@@ -5,11 +5,11 @@
 
 # REFERENCE: List of currents in hex
 # 3A    = 0x7530
-# 2A    = 0x4E20
 # 0.5A  = 0x1388
 # 1A    = 0x2710
 # 10A   = 0x186A0
 # 15A   = 0x249F0
+# 20A   = 
 
 import signal
 import serial
@@ -21,7 +21,7 @@ import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
-datafile = 'testdata/test_cell_0.csv'
+datafile = 'testdata/test_cell_2.csv'
 # WARNING! 'w' will overwrite existing data
 # use 'a' to add to existing data
 CSVmode = 'w'  
@@ -62,7 +62,7 @@ def main():
     print(sp)
     signal.signal(signal.SIGINT, abort) 
     
-## Construct a set to remote command
+## Set to remote command
     cmd=[0]*26
     cmd[0]=0xAA
     cmd[2]=0x20
@@ -78,70 +78,68 @@ def main():
     cmd[25]=bk8500functions.csum(cmd)
     bk8500functions.cmd8500(cmd, sp)
 
-#Set voltage limit to __V
-#     cmd=[0]*26
-#     cmd[0]=0xAA
-#     cmd[2]=0x22
-#     cmd[3]=0x00 # LSB of voltage value
-#     cmd[4]=0x00
-#     cmd[4]=0x00
-#     cmd[4]=0x00 # MSB
-#     cmd[25]=bk8500functions.csum(cmd)
-#     bk8500functions.cmd8500(cmd,sp) 
-
-# Set current limit to 16A
+# Set current limit to !20A!
     cmd=[0]*26
     cmd[0]=0xAA
     cmd[2]=0x24
-    cmd[3]=0x00 # LSB of current value 16A = 160000*0.1mA = 27100
-    cmd[4]=0x71
-    cmd[5]=0x02
+    cmd[3]=0x40 # LSB of current value 20A = 0x30d40
+    cmd[4]=0x0d
+    cmd[5]=0x03
     cmd[6]=0x00 # MSB
     cmd[25]=bk8500functions.csum(cmd)
     bk8500functions.cmd8500(cmd,sp)
 
-    for i in range(num_test_cycles):
-    # Set constant current of 0.5A = 0x1388 for 10 seconds
-        cmd=[0]*26
-        cmd[0]=0xAA
-        cmd[2]=0x2A
-        cmd[3]=0x88 # LSB of current value 
-        cmd[4]=0x13 # 88 13
-        cmd[5]=0x00
-        cmd[6]=0x00 # MSB
-        cmd[25]=bk8500functions.csum(cmd)
-        bk8500functions.cmd8500(cmd,sp)
+# Set constant current of 0.5A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0x88 # LSB of current value 
+    cmd[4]=0x13 # note: cannot write a current higher 
+    cmd[5]=0x00       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
 
-        print("read data 0.5A:")
-    # Continuously collect votlage and current data for 10 seconds
-        t_readdata = time.time() + 10
-        while time.time() < t_readdata:
-            testfunctions.readVC(cmd, sp)
-            writer.writerow(get_load_data(cmd, sp))
-            
-    # Set constant current of 2A = 0x4E20 
-        cmd=[0]*26
-        cmd[0]=0xAA
-        cmd[2]=0x2A
-        cmd[3]=0x20 # LSB of current value 15A = 160000*0.1mA = 249F0
-        cmd[4]=0x4E
-        cmd[5]=0x00
-        cmd[6]=0x00 # MSB
-        cmd[25]=bk8500functions.csum(cmd)
-        bk8500functions.cmd8500(cmd,sp)
-
-        print("read data 2A:")
-    # Continuously collect votlage and current data for 1 second
-        t_readdata = time.time() + 1
-        while time.time() < t_readdata:
-            testfunctions.readVC(cmd, sp)
-            writer.writerow(get_load_data(cmd, sp))
+    print("read data 0.5A:")
+    for x in range(0,5):
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
 
 
-    # reset the load to 0A, 0V 
+# Set constant current of 1A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0x10 # LSB of current value 
+    cmd[4]=0x27 # note: cannot write a current higher 
+    cmd[5]=0x00       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+
+    print("read data 1A:")
+    for x in range(0,5):
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
+
+# Set constant current of 1.5A for 10 seconds
+    cmd=[0]*26
+    cmd[0]=0xAA
+    cmd[2]=0x2A
+    cmd[3]=0x98 # LSB of current value 
+    cmd[4]=0x3a # note: cannot write a current higher 
+    cmd[5]=0x00       # than the limit without error
+    cmd[6]=0x00 # MSB
+    cmd[25]=bk8500functions.csum(cmd)
+    bk8500functions.cmd8500(cmd,sp)
+
+    print("read data 1.5A:")
+    for x in range(0,5):
+        testfunctions.readVC(cmd, sp)
+        writer.writerow(get_load_data(cmd, sp))
+
+
     resetload.resetLoad(cmd, sp)
-
-    # close the serial port
     sp.close()
     
     # close the CSV file

@@ -20,7 +20,7 @@ import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
-datafile = 'testdata/test_cell_0_15amp.csv'
+datafile = 'testdata/test_cell_1_15amp.csv'
 # WARNING! 'w' will overwrite existing data
 # use 'a' to add to existing data
 CSVmode = 'w'  
@@ -88,13 +88,13 @@ def main():
 #     cmd[25]=bk8500functions.csum(cmd)
 #     bk8500functions.cmd8500(cmd,sp) 
 
-# Set current limit to 16A
+# Set current limit to 20A
     cmd=[0]*26
     cmd[0]=0xAA
     cmd[2]=0x24
-    cmd[3]=0x00 # LSB of current value 16A = 160000*0.1mA = 27100
-    cmd[4]=0x71
-    cmd[5]=0x02
+    cmd[3]=0x40 # LSB of current value 16A = 160000*0.1mA = 27100
+    cmd[4]=0x0d
+    cmd[5]=0x03
     cmd[6]=0x00 # MSB
     cmd[25]=bk8500functions.csum(cmd)
     bk8500functions.cmd8500(cmd,sp)
@@ -131,7 +131,7 @@ def main():
 
         print("read data 15A:")
     # Continuously collect votlage and current data for 1 seconds
-        t_readdata = time.time() + 1
+        t_readdata = time.time() + 2
         while time.time() < t_readdata:
             testfunctions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))

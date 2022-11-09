@@ -5,8 +5,9 @@ def cmd8500(cmd , ser):
     # printbuff(cmd)
     ser.write(cmd)
     resp = ser.readline(26)
-    # print("Resp: ")
-    # printbuff(resp)
+    print("Resp: ")
+    printbuff(resp)
+    return resp
     
 
 # ORIGINAL PRINTBUFF: prints the serial output into a readable little-endian hex format
@@ -18,6 +19,9 @@ def printbuff(b):
         r+=" "
         r+=hex(b[s]).replace('0x','')
     print(r)
+
+# def printbuff(b):
+#     print(b)
 
 
 # calculates the checksum
