@@ -1,4 +1,6 @@
-# Main Test Script: test-rest.py
+# README
+
+## Main Test Script: test-rest.py
 
 ## About the Electronic Load
 
