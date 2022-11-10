@@ -3,6 +3,8 @@
 # TODO: TEST IF CURRENT LIMIT ACTUALLY LIMITS THE CURRENT
 # TODO: FIND A WAY TO STORE DATA IN CSV FILE AND MARK TIMESTAMPS IN PARALLEL
 
+# NOTE: STOP DISCHARGING WHEN CELL REACHES 2.8V
+
 import signal
 import serial
 import time
@@ -13,10 +15,10 @@ import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
-datafile = 'testdata/test_cell_3_15amp.csv'
+datafile = 'testdata/test_cell_rest_4_15amp.csv'
 # WARNING! 'w' will overwrite existing data
 # use 'a' to add to existing data
-CSVmode = 'w'  
+CSVmode = 'a'  
 
 length_packet = 26
 num_test_cycles = 10
@@ -49,9 +51,11 @@ def get_load_data(cmd, sp):
     load_data.extend(testfunctions.readVC(cmd, sp))
     return load_data
 
+sp.open()
+print(sp)
+
 def main():
-    sp.open()
-    print(sp)
+    
     signal.signal(signal.SIGINT, abort) 
     
 ## Construct a set to remote command
@@ -92,7 +96,8 @@ def main():
     cmd[25]=bk8500functions.csum(cmd)
     bk8500functions.cmd8500(cmd,sp)
 
-    for i in range(num_test_cycles):
+    # for i in range(num_test_cycles):
+    while True:
     # Set constant current of 0.5A = 0x1388 for 10 seconds
         cmd=[0]*26
         cmd[0]=0xAA
@@ -108,6 +113,7 @@ def main():
     # Continuously collect votlage and current data for 10 seconds
         t_readdata = time.time() + 10
         while time.time() < t_readdata:
+        # for x in range(0, 75):
             testfunctions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))
             
@@ -126,8 +132,29 @@ def main():
     # Continuously collect votlage and current data for 1 seconds
         t_readdata = time.time() + 2
         while time.time() < t_readdata:
+        # for x in range (0, 15):
             testfunctions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))
+
+# Set constant current of 0A = 0x0 
+        resetload.resetLoad(cmd, sp)
+
+        print("read data rest (0A):")
+    # Rest the cell for 100s while reading current voltage data
+        # t_readdata = time.time() + 30
+        # while time.time() < t_readdata:
+        # # for x in range (0, 800):
+        #     # endTest = testfunctions.checkCutoffVoltage(cmd, sp)
+        #     # if (endTest < 0):
+        #     #     resetload.resetLoad(cmd, sp)
+        #     #     sp.close()
+        #     #     f.close()
+        #     #     sys.exit()
+        #     testfunctions.readVC(cmd, sp)
+        #     writer.writerow(get_load_data(cmd, sp))
+        time.sleep(20)
+
+        main()
 
 
     # reset the load to 0A, 0V 
