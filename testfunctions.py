@@ -4,11 +4,15 @@ import string
 
 # returns the voltage read as an int (in units of mV)
 def readVoltage(resp):
+    
     voltage = "0x"
     # 01 23 45 [67 89 1011 1213]
+    
     for x in range (6, 2, -1):
         voltage = voltage + hex(resp[x]).replace('0x','')
+    print("before:", voltage)
     voltage = int(voltage, 16)
+    print("after:", voltage)
     # print("voltage = ", voltage)
     return voltage
 
@@ -18,7 +22,9 @@ def readCurrent(resp):
     # 01 23 45 67 89 1011 1213 [1415 1617 1819 2021]
     for x in range (10, 6, -1):
         current = current + hex(resp[x]).replace('0x','')
+    print("before: ", current)
     current = int(current, 16)
+    print("after: ", current)
     # print("current = ", current)
     return current    
 
@@ -31,7 +37,7 @@ def readVC(cmd, ser):
     cmd[2]=0x5f
     cmd[25]=bk8500functions.csum(cmd)
     resp = bk8500functions.cmd8500(cmd, ser)
-
+    
     # extract the current data from response (units of A)
     current = float(readCurrent(resp)) / 10000
 
