@@ -11,7 +11,6 @@ import time
 import csv
 import sys
 import bk8500functions
-import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
@@ -48,7 +47,7 @@ def abort(signum, frame):
 def get_load_data(cmd, sp):
     load_data = []
     load_data.append(time.time())
-    load_data.extend(testfunctions.readVC(cmd, sp))
+    load_data.extend(bk8500functions.readVC(cmd, sp))
     return load_data
 
 sp.open()
@@ -114,7 +113,7 @@ def main():
         t_readdata = time.time() + 10
         while time.time() < t_readdata:
         # for x in range(0, 75):
-            testfunctions.readVC(cmd, sp)
+            bk8500functions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))
             
     # Set constant current of 15A = 0x249F0 for 0.5 seconds
@@ -133,7 +132,7 @@ def main():
         t_readdata = time.time() + 2
         while time.time() < t_readdata:
         # for x in range (0, 15):
-            testfunctions.readVC(cmd, sp)
+            bk8500functions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))
 
 # Set constant current of 0A = 0x0 
@@ -144,13 +143,13 @@ def main():
         # t_readdata = time.time() + 30
         # while time.time() < t_readdata:
         # # for x in range (0, 800):
-        #     # endTest = testfunctions.checkCutoffVoltage(cmd, sp)
+        #     # endTest = bk8500functions.checkCutoffVoltage(cmd, sp)
         #     # if (endTest < 0):
         #     #     resetload.resetLoad(cmd, sp)
         #     #     sp.close()
         #     #     f.close()
         #     #     sys.exit()
-        #     testfunctions.readVC(cmd, sp)
+        #     bk8500functions.readVC(cmd, sp)
         #     writer.writerow(get_load_data(cmd, sp))
         time.sleep(20)
 
