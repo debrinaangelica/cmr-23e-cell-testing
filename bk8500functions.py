@@ -11,10 +11,6 @@ def cmd8500(cmd , ser):
     printbuff(resp)
     return resp
     
-
-# ORIGINAL PRINTBUFF: prints the serial output into a readable little-endian hex format
-#   hex(x) converts integer x to hex form
-#   r+=" " puts a space in between each hex 
 def printbuff(b):
     r=""
     for s in range(len(b)):
@@ -22,13 +18,11 @@ def printbuff(b):
         r+=hex(b[s]).replace('0x','')
     print(r)
 
-# def printbuff(b):
-#     print(b)
-
-
 # calculates the checksum
 def csum(thing):
     sum = 0
     for i in range(len(thing)):
         sum+=thing[i]
     return 0xFF&sum
+
+    
