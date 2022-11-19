@@ -10,7 +10,6 @@ import serial
 import time
 import csv
 import sys
-import bk8500functions
 import testfunctions
 import resetload
 
@@ -63,16 +62,16 @@ def main():
     cmd[0]=0xAA
     cmd[2]=0x20
     cmd[3]=0x01
-    cmd[25]=bk8500functions.csum(cmd)
-    bk8500functions.cmd8500(cmd, sp)
+    cmd[25]=testfunctions.csum(cmd)
+    testfunctions.cmd8500(cmd, sp)
     
 ### Turn ON the load
     cmd=[0]*26
     cmd[0]=0xAA
     cmd[2]=0x21
     cmd[3]=0x01
-    cmd[25]=bk8500functions.csum(cmd)
-    bk8500functions.cmd8500(cmd, sp)
+    cmd[25]=testfunctions.csum(cmd)
+    testfunctions.cmd8500(cmd, sp)
 
 #Set voltage limit to __V
 #     cmd=[0]*26
@@ -82,8 +81,8 @@ def main():
 #     cmd[4]=0x00
 #     cmd[4]=0x00
 #     cmd[4]=0x00 # MSB
-#     cmd[25]=bk8500functions.csum(cmd)
-#     bk8500functions.cmd8500(cmd,sp) 
+#     cmd[25]=testfunctions.csum(cmd)
+#     testfunctions.cmd8500(cmd,sp) 
 
 # Set current limit to 20A
     cmd=[0]*26
@@ -93,8 +92,8 @@ def main():
     cmd[4]=0x0d
     cmd[5]=0x03
     cmd[6]=0x00 # MSB
-    cmd[25]=bk8500functions.csum(cmd)
-    bk8500functions.cmd8500(cmd,sp)
+    cmd[25]=testfunctions.csum(cmd)
+    testfunctions.cmd8500(cmd,sp)
 
     # for i in range(num_test_cycles):
     while True:
@@ -106,8 +105,8 @@ def main():
         cmd[4]=0x13 # 88 13
         cmd[5]=0x00
         cmd[6]=0x00 # MSB
-        cmd[25]=bk8500functions.csum(cmd)
-        bk8500functions.cmd8500(cmd,sp)
+        cmd[25]=testfunctions.csum(cmd)
+        testfunctions.cmd8500(cmd,sp)
 
         print("read data 0.5A:")
     # Continuously collect votlage and current data for 10 seconds
@@ -125,8 +124,8 @@ def main():
         cmd[4]=0x49
         cmd[5]=0x02
         cmd[6]=0x00 # MSB
-        cmd[25]=bk8500functions.csum(cmd)
-        bk8500functions.cmd8500(cmd,sp)
+        cmd[25]=testfunctions.csum(cmd)
+        testfunctions.cmd8500(cmd,sp)
 
         print("read data 15A:")
     # Continuously collect votlage and current data for 1 seconds

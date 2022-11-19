@@ -1,6 +1,29 @@
-
-import bk8500functions
 import string
+
+
+# prints out the command and load output associated to it
+# returns a list of length 26
+def cmd8500(cmd , ser):
+    import resetload
+    print("Command: ", hex(cmd[2]))
+    print(list(cmd))
+    ser.write(cmd)
+    resp = ser.readline(26)
+    print("Resp: ")
+    # safety check
+    if (len(resp) < 26):
+        resetload.resetLoad(cmd, ser)
+    resp = list(resp)
+    return resp
+
+# calculates the checksum
+def csum(thing):
+    sum = 0
+    for i in range(len(thing)):
+        sum+=thing[i]
+    return 0xFF&sum
+
+    
 
 # returns the voltage read as an int (in units of mV)
 def readVoltage(resp):
