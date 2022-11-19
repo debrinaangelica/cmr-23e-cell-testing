@@ -35,6 +35,8 @@ def resetLoad(cmd, sp):
     cmd[25]=bk8500functions.csum(cmd)
     bk8500functions.cmd8500(cmd, sp)
 
+    print("LOAD RESET")
+
 
 def main():
     sp = serial.Serial()

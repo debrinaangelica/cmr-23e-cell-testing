@@ -2,6 +2,7 @@
 import time
 # prints out the command and load output associated to it
 def cmd8500(cmd , ser):
+    import resetload
     # print("Command: ", hex(cmd[2]))
     # printbuff(cmd)
     ser.write(cmd)
@@ -9,6 +10,8 @@ def cmd8500(cmd , ser):
     resp = ser.readline(26)
     print("Resp: ")
     printbuff(resp)
+    if (len(resp) < 26):
+        resetload.resetLoad(cmd, ser)
     return resp
     
 def printbuff(b):
