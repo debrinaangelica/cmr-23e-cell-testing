@@ -1,0 +1,15 @@
+~ 5 pulses for DCIR measurement (put this in its own csv file)
+
+after the 5 pulses is up, discharge the cell at constant 15 A current until voltage reaches 28.V to be safe.
+
+for both: track voltage current data 
+for DCIR: calculate data 
+
+possibility:
+    whenever we receive a packet with less than 26 bytes, we can log it in a log file to say for how many data points 
+    we're missing out on.
+    LOG file could record the time interval during which data failed to be measured.
+    make sure this error doesn't happen for a lot of seconds at a time.
+
+
+    for dcir calculation -- see Mingkai's chalkboard lessons

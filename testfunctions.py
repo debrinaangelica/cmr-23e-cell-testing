@@ -1,4 +1,5 @@
 import string
+import binascii
 
 
 # prints out the command and load output associated to it
@@ -13,7 +14,10 @@ def cmd8500(cmd , ser):
     # safety check
     if (len(resp) < 26):
         resetload.resetLoad(cmd, ser)
+    print(binascii.b2a_hex(resp))
+    print(list(resp))
     resp = list(resp)
+
     return resp
 
 # calculates the checksum
@@ -40,6 +44,7 @@ def readVoltage(resp):
     return voltage
 
 # returns the current read as an int (in units of mA)
+# param[in] resp: a list of integers of length 26
 def readCurrent(resp):
     current = "0x"
     # 01 23 45 67 89 1011 1213 [1415 1617 1819 2021]
@@ -59,7 +64,7 @@ def readVC(cmd, ser):
     cmd[0]=0xAA
     cmd[2]=0x5f
     cmd[25]=csum(cmd)
-    resp = cmd8500(cmd, ser)
+    resp = cmd8500(cmd, ser) # resp is a list of length 26
     
     # extract the current data from response (units of A)
     current = float(readCurrent(resp)) / 10000

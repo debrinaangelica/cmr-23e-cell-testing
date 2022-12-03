@@ -1,4 +1,4 @@
-
+# convert value we want to big-endian hex format
 
 def main ():
     current = 20 # current in units of A

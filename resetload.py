@@ -1,5 +1,5 @@
 import serial
-import bk8500functions
+import testfunctions
 
 length_packet = 26
 num_test_cycles = 10
@@ -13,8 +13,8 @@ def resetLoad(cmd, sp):
     cmd[4]=0x00
     cmd[5]=0x00
     cmd[6]=0x00 # MSB
-    cmd[25]=bk8500functions.csum(cmd)
-    bk8500functions.cmd8500(cmd,sp)
+    cmd[25]=testfunctions.csum(cmd)
+    testfunctions.cmd8500(cmd,sp)
 
 # Reset constant voltage to 0A
     cmd=[0]*26
@@ -24,18 +24,18 @@ def resetLoad(cmd, sp):
     cmd[4]=0x00
     cmd[5]=0x00
     cmd[6]=0x00 # MSB
-    cmd[25]=bk8500functions.csum(cmd)
-    bk8500functions.cmd8500(cmd,sp)
+    cmd[25]=testfunctions.csum(cmd)
+    testfunctions.cmd8500(cmd,sp)
 
 # Turn OFF the load
     cmd=[0]*26
     cmd[0]=0xAA
     cmd[2]=0x21
     cmd[3]=0x00
-    cmd[25]=bk8500functions.csum(cmd)
-    bk8500functions.cmd8500(cmd, sp)
+    cmd[25]=testfunctions.csum(cmd)
+    testfunctions.cmd8500(cmd, sp)
 
-    print("LOAD RESET")
+    print(" LOAD RESET")
 
 
 def main():
