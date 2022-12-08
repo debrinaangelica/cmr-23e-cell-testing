@@ -5,6 +5,7 @@ length_packet = 26
 num_test_cycles = 10
 
 def resetLoad(cmd, sp):
+    print("RESET LOAD:")
     # Reset constant current to 0A
     cmd=[0]*26
     cmd[0]=0xAA
@@ -35,7 +36,7 @@ def resetLoad(cmd, sp):
     cmd[25]=testfunctions.csum(cmd)
     testfunctions.cmd8500(cmd, sp)
 
-    print(" LOAD RESET")
+    print("LOAD RESET")
 
 
 def main():

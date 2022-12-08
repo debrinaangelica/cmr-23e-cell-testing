@@ -1,9 +1,4 @@
-# DO WE WANT TO REST 100s AFTER DOING THE 0.5A - 15A SWITCH
-# TODO: TEST IF FOR I IN RANGE ACTUALLY RUNS RANGE NUMBER OF TIMES
-# TODO: TEST IF CURRENT LIMIT ACTUALLY LIMITS THE CURRENT
-# TODO: FIND A WAY TO STORE DATA IN CSV FILE AND MARK TIMESTAMPS IN PARALLEL
-
-# NOTE: STOP DISCHARGING WHEN CELL REACHES 2.8V
+# @brief: A script for testing the correctness of data acquisition and parsing
 
 import signal
 import serial
@@ -14,13 +9,13 @@ import testfunctions
 import resetload
 
 ### GLOBAL VARIABLES ###
-datafile = 'testdata/test_data_retrieve.csv'
+datafile = 'testdata/data_collection_test.csv'
 # WARNING! 'w' will overwrite existing data
 # use 'a' to add to existing data
 CSVmode = 'w'  
 
 length_packet = 26
-num_test_cycles = 5
+num_test_cycles = 10
 sp = serial.Serial()
 sp.setBaudrate = 9600
 sp.port = 'COM6'
@@ -38,9 +33,7 @@ if (CSVmode == 'w'):
     writer.writerow(fieldnames)
 
 # ctrl-C to abort if something goes wrong
-def abort(signum, frame):
-    resetload.resetLoad(cmd, sp)
-    sys.terminate()
+
 
 # returns the load data as an array to store in csv file
 # format [timestamp, voltage, current]
@@ -52,6 +45,11 @@ def get_load_data(cmd, sp):
 
 sp.open()
 print(sp)
+
+def abort(signum, frame):
+    resetload.resetLoad(cmd, sp)
+    sp.close()
+    sys.terminate()
 
 def main():
     
@@ -72,17 +70,7 @@ def main():
     cmd[3]=0x01
     cmd[25]=testfunctions.csum(cmd)
     testfunctions.cmd8500(cmd, sp)
-
-#Set voltage limit to __V
-#     cmd=[0]*26
-#     cmd[0]=0xAA
-#     cmd[2]=0x22
-#     cmd[3]=0x00 # LSB of voltage value
-#     cmd[4]=0x00
-#     cmd[4]=0x00
-#     cmd[4]=0x00 # MSB
-#     cmd[25]=testfunctions.csum(cmd)
-#     testfunctions.cmd8500(cmd,sp) 
+ 
 
 # Set current limit to 20A
     cmd=[0]*26
@@ -95,10 +83,9 @@ def main():
     cmd[25]=testfunctions.csum(cmd)
     testfunctions.cmd8500(cmd,sp)
 
-    for i in range(num_test_cycles):
-    # while True:
+    # for i in range(num_test_cycles):
+    while True:
     # Set constant current of 0.5A = 0x1388 for 10 seconds
-        print("set current to 0.5A")
         cmd=[0]*26
         cmd[0]=0xAA
         cmd[2]=0x2A
@@ -112,13 +99,12 @@ def main():
         print("read data 0.5A:")
     # Continuously collect votlage and current data for 10 seconds
         t_readdata = time.time() + 10
-        while time.time() < t_readdata:
+        while True:
         # for x in range(0, 75):
             testfunctions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))
             
     # Set constant current of 15A = 0x249F0 for 0.5 seconds
-        print("set current to 15A")
         cmd=[0]*26
         cmd[0]=0xAA
         cmd[2]=0x2A
@@ -130,37 +116,16 @@ def main():
         testfunctions.cmd8500(cmd,sp)
 
         print("read data 15A:")
-    # Continuously collect votlage and current data for 2 seconds
+    # Continuously collect votlage and current data for 1 seconds
         t_readdata = time.time() + 2
         while time.time() < t_readdata:
-        # for x in range (0, 15):
             testfunctions.readVC(cmd, sp)
             writer.writerow(get_load_data(cmd, sp))
 
-    # Set constant current of 0A for 0.5 seconds
-        print("(rest) set current to 0A")
-        cmd=[0]*26
-        cmd[0]=0xAA
-        cmd[2]=0x2A
-        cmd[3]=0x00 # LSB of current value 15A = 160000*0.1mA = 249F0
-        cmd[4]=0x00
-        cmd[5]=0x00
-        cmd[6]=0x00 # MSB
-        cmd[25]=testfunctions.csum(cmd)
-        testfunctions.cmd8500(cmd,sp)
-
-        print("read data 0A:")
-    # Continuously collect votlage and current data for 1 seconds
-        t_readdata = time.time() + 100
-        while time.time() < t_readdata:
-        # for x in range (0, 15):
-            testfunctions.readVC(cmd, sp)
-            writer.writerow(get_load_data(cmd, sp))
-   
 # Set constant current of 0A = 0x0 
-        # resetload.resetLoad(cmd, sp)
+        resetload.resetLoad(cmd, sp)
 
-        # print("read data rest (0A):")
+        print("read data rest (0A):")
     # Rest the cell for 100s while reading current voltage data
         # t_readdata = time.time() + 30
         # while time.time() < t_readdata:
@@ -173,7 +138,10 @@ def main():
         #     #     sys.exit()
         #     testfunctions.readVC(cmd, sp)
         #     writer.writerow(get_load_data(cmd, sp))
-        # time.sleep(20)
+        time.sleep(20)
+
+        main()
+
 
     # reset the load to 0A, 0V 
     resetload.resetLoad(cmd, sp)
